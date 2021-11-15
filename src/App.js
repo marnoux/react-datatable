@@ -12,10 +12,31 @@ const App = () => {
 	const search = (rows) => {
 		const searchColumn = ['description'];
 
+		formatDate(data);
+
 		return rows.filter((row) =>
 			searchColumn.some(
 				(column) =>
+					// Search text should be case insensitive
 					row[column].toString().toLowerCase().indexOf(query.toLowerCase()) > -1
+			)
+		);
+	};
+
+	// Display dates in format dd.mm.yyyy
+	const formatDate = (rows) => {
+		const dateColumn = ['start date'];
+
+		return rows.filter((row) =>
+			dateColumn.some(
+				(column) =>
+					(row[column] = new Date(row[column])
+						.toLocaleDateString('da-DK', {
+							day: 'numeric',
+							year: 'numeric',
+							month: 'numeric',
+						})
+						.toString())
 			)
 		);
 	};
@@ -25,6 +46,7 @@ const App = () => {
 	}, [sortedData]);
 
 	useEffect(() => {
+		// Fetch dataset from API on load
 		fetch('https://sievo-react-assignment.azurewebsites.net/api/data')
 			.then((response) => response.json())
 			.then((json) => setData(json));
@@ -35,8 +57,9 @@ const App = () => {
 			<MainHeader />
 			<div className='col-4 mb-4'>
 				<input
-					className='form-control input-sm'
+					className='form-control'
 					placeholder='search'
+					name='searchInput'
 					type='text'
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}

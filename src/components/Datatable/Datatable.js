@@ -37,7 +37,7 @@ const Datatable = ({ data, sortData }) => {
 
 	return (
 		<div className='table-responsive'>
-			<table className='table'>
+			<table className='table' id='datatable' name='datatable' role='datatable'>
 				<thead className='table-dark'>
 					<tr>
 						{data[0] &&
