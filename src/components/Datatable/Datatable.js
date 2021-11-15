@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Datatable = ({ data }) => {
-	const columns = data[0] && Object.keys(data[0]);
+const Datatable = ({ data, sortData }) => {
+	const [order, setOrder] = useState(true);
 
-	// This function will format headings by capitalizing each word
+	let columns = data[0] && Object.keys(data[0]);
+
+	// The formatHeading function will pretty up the header values by capitilizing every letter
 	const formatHeading = (heading) => {
 		let separateWord = heading.toLowerCase().split(' ');
 
@@ -14,20 +16,46 @@ const Datatable = ({ data }) => {
 		return separateWord.join(' ');
 	};
 
+	// User should be able to sort by start date.
+	const sort = (col) => {
+		// If the Start Date header is clicked, any other headers will do nothing
+		if (!col.match(/start date*/)) return;
+
+		// Here I used the ternary operator to sort
+		const sortedData = order
+			? // Sort ascending
+			  [...data].sort((a, b) => (a[col] > b[col] ? 1 : -1))
+			: // Sort descending
+			  [...data].sort((a, b) => (a[col] < b[col] ? 1 : -1));
+
+		// Toggle the order
+		setOrder(!order);
+
+		// The sortData function will return the sorted values back to the parent component
+		sortData(sortedData);
+	};
+
 	return (
-		<div className='table-responsive-sm'>
+		<div className='table-responsive'>
 			<table className='table'>
 				<thead className='table-dark'>
-					<tr key={data.key}>
+					<tr>
 						{data[0] &&
-							columns.map((heading) => <th>{formatHeading(heading)}</th>)}
+							columns.map((heading) => (
+								<th key={Math.random()} onClick={() => sort(heading)}>
+									{formatHeading(heading)}
+								</th>
+							))}
 					</tr>
 				</thead>
 				<tbody>
 					{data.map((row) => (
-						<tr key={row.key}>
+						<tr key={Math.random()}>
 							{columns.map((column) => (
-								<td>{row[column]}</td>
+								<td key={Math.random()}>
+									{/* Null values (including the string "NULL") are displayed as empty cells */}
+									{row[column] === 'NULL' ? '' : row[column]}
+								</td>
 							))}
 						</tr>
 					))}

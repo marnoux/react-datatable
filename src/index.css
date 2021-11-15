@@ -6,6 +6,12 @@
 	background-color: #282c34;
 	align-items: center;
 	justify-content: center;
-	font-size: calc(10px + 2vmin);
 	color: white;
+	font-size: calc(2px + 2vmin);
+}
+
+@media (max-width: 750px) {
+	* {
+		font-size: calc(1px + 2vmin);
+	}
 }

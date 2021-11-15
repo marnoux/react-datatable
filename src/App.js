@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
-import MainHeader from './components/UI/MainHeader/MainHeader';
 import Datatable from './components/Datatable/Datatable';
-
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+import MainHeader from './components/UI/MainHeader/MainHeader';
 
 const App = () => {
 	const [data, setData] = useState([]);
-	const [q, setQ] = useState('');
-	const [searchColumns, setSearchColumns] = useState(['description']);
+	const [sortedData, setSortedData] = useState([]);
+	const [query, setQuery] = useState('');
 
+	// User should be able to search by description. E.g. if "Kryptonite" is written to search box, only rows
 	const search = (rows) => {
+		const searchColumn = ['description'];
+
 		return rows.filter((row) =>
-			searchColumns.some(
+			searchColumn.some(
 				(column) =>
-					row[column].toString().toLowerCase().indexOf(q.toLowerCase()) > -1
+					row[column].toString().toLowerCase().indexOf(query.toLowerCase()) > -1
 			)
 		);
 	};
+
+	useEffect(() => {
+		setData(sortedData);
+	}, [sortedData]);
 
 	useEffect(() => {
 		fetch('https://sievo-react-assignment.azurewebsites.net/api/data')
@@ -29,16 +33,20 @@ const App = () => {
 	return (
 		<div className='container-fluid'>
 			<MainHeader />
-			<div className='col'>
+			<div className='col-4 mb-4'>
 				<input
-					className='form-control'
+					className='form-control input-sm'
+					placeholder='search'
 					type='text'
-					value={q}
-					onChange={(e) => setQ(e.target.value)}
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
 				/>
 			</div>
 			<div className='col'>
-				<Datatable data={search(data)} />
+				<Datatable
+					data={search(data)}
+					sortData={(sortedData) => setSortedData(sortedData)}
+				/>
 			</div>
 		</div>
 	);

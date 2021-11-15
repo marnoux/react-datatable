@@ -1,8 +1,8 @@
 const MainHeader = () => {
 	return (
 		<div>
-			<nav class='navbar navbar-expand-lg'>
-				<div class='container-fluid justify-content-center'>
+			<nav className='navbar navbar-expand-lg'>
+				<div className='container-fluid justify-content-center'>
 					<h1>Sievo</h1>
 				</div>
 			</nav>
